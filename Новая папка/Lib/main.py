@@ -2,21 +2,25 @@ import platform
 import socket
 import subprocess
 import ctypes
+import psutil
 
-def run_command(command):
-    result = subprocess.run(command, shell=True, capture_output=True, text=True, encoding='cp866')
+
+def start(command):
+    result = subprocess.run(command, shell=True, capture_output=True, text=True,encoding='cp866' )
     return result.stdout.strip()
 
-def get_system_overview():
-    overview = {
-        "System Information": run_command("systeminfo"),
-        "Active Setup": run_command("reg query HKLM\\SOFTWARE\\Microsoft\\Active Setup\\Installed Components /s"),
-        "Installed Programs": run_command("wmic product get name,version"),
-    }
-    return overview
 
-def get_system_info():
-    system_info = {
+def allinfo():
+    interface = {
+        "System Information": start("systeminfo"),
+        "Active Setup": start("reg query HKLM\\SOFTWARE\\Microsoft\\Active Setup\\Installed Components /s"),
+        "Installed Programs": start("wmic product get name,version"),
+    }
+    return interface
+
+
+def maininfo():
+    systeminfa = {
         "OS": platform.system(),
         "OS Version": platform.version(),
         "OS Release": platform.release(),
@@ -27,30 +31,43 @@ def get_system_info():
         "IP Address": socket.gethostbyname(socket.gethostname()),
         "User Privileges": ctypes.windll.shell32.IsUserAnAdmin(),
     }
-    return system_info
+    return systeminfa
 
-def get_network_info():
+
+def netinfo():
+    inetinfo = psutil.net_if_addrs()
+    return inetinfo
+
+
+def gethw():
     pass
 
-def get_hardware_info():
+
+def getdevice():
     pass
 
-def get_device_manager_info():
-    pass
 
 def main():
-    system_overview = get_system_overview()
-    system_info = get_system_info()
-    network_info = get_network_info()
-    hardware_info = get_hardware_info()
-    device_manager_info = get_device_manager_info()
+    systeminterface = allinfo()
+    systeminfo = maininfo()
+    networkinfo = netinfo()
+    hwinfo = gethw()
+    dmmeneger = getdevice()
 
-    print("System Overview:")
-    for section, info in system_overview.items():
+    print("Обзор системы:")
+    for section, info in systeminterface.items():  # Заменил system_overview на systeminterface
         print(f"{section}:\n{info}\n")
 
-    print("\nSystem Information:")
-    for key, value in system_info.items():
+    print("\nИнформация о системе:")
+    for key, value in systeminfo.items():
         print(f"{key}: {value}")
+
+    print("\nСетевая информация:")
+    for interface, addrs in networkinfo.items():
+        print(f"Интерфейс: {interface}")
+        for addr in addrs:
+            print(
+                f"  Семейство адресов: {addr.family}, Адрес: {addr.address}, Маска подсети: {addr.netmask}, Широковещательный IP: {addr.broadcast}")
+        print()
 if __name__ == "__main__":
     main()
