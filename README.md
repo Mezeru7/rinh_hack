@@ -12,8 +12,6 @@
 
 Экономия памяти компьютера;
 
-Киллерфича-3;
-
 ## Основной стек технологий:
 
 Python, platform, socket, openpyxl, ctypes, subprocess, ctypes, psutil, reportlab.lib.pagesizes, reportlab.pdfgen, Git.
