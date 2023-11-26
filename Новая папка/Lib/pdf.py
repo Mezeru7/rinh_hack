@@ -5,9 +5,11 @@ import socket
 import subprocess
 import ctypes
 
-def gather_computer_info():
-    # Ваш код для сбора информации о компьютере
+
+def audit():
+    # Cбор информации о компьютере
     info = {
+
         "OS": platform.system(),
         "OS Version": platform.version(),
         "OS Release": platform.release(),
@@ -21,22 +23,19 @@ def gather_computer_info():
     return info
 
 
-def create_pdf(computer_info, filename='output.pdf'):
+def create(pcinfo, filename='output.pdf'):
     # Создание PDF-файла
     pdf = canvas.Canvas(filename, pagesize=letter)
 
     pdf.drawString(100, 750, 'Computer information')
 
     y_position = 730
-    for key, value in computer_info.items():
+    for key, value in pcinfo.items():
         y_position -= 15
         pdf.drawString(100, y_position, f'{key}: {value}')
 
     pdf.save()
 
+pcinfo = audit()
 
-# Сбор информации о компьютере
-computer_info = gather_computer_info()
-
-# Создание PDF-файла
-create_pdf(computer_info, filename='output.pdf')
+create(pcinfo, filename='output.pdf')
